@@ -21,5 +21,9 @@ int main(void)
 ISR (USART_RXC_vect)
 {
 	Uint8t data = UDR;
-	SPI_Transmit(data); 
+	while (data != 0)
+	{
+		SPI_Transmit(data); 
+		data = 0;
+	}
 }

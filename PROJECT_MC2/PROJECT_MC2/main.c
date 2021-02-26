@@ -21,10 +21,20 @@ int main(void)
 
 ISR (SPI_STC_vect)
 {
-	if (SPI_Recieve() == '1') 
-	LED0_TGL();
-	else if (SPI_Recieve() == '2') 
-	LED1_TGL();
-	else if (SPI_Recieve() == '3') 
-	LED2_TGL();
+	Uint8t data = SPDR;
+	if (data == '1')
+	{
+		LED0_TGL();
+	}
+	else if (data == '2')
+	{
+		LED1_TGL();
+	}
+	else if (data == '3')
+	{
+		LED2_TGL();
+	} 
+	
+	
 }
+

@@ -3,29 +3,29 @@ PROJECT_MC2.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000292  00000000  00000000  00000054  2**1
+  0 .text         00000280  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  000002e6  2**0
+  1 .data         00000000  00800060  00800060  000002d4  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .comment      00000030  00000000  00000000  000002e6  2**0
+  2 .comment      00000030  00000000  00000000  000002d4  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000318  2**2
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000304  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000118  00000000  00000000  00000354  2**0
+  4 .debug_aranges 00000118  00000000  00000000  00000340  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00000c63  00000000  00000000  0000046c  2**0
+  5 .debug_info   00000c54  00000000  00000000  00000458  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000736  00000000  00000000  000010cf  2**0
+  6 .debug_abbrev 00000732  00000000  00000000  000010ac  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000694  00000000  00000000  00001805  2**0
+  7 .debug_line   000006fc  00000000  00000000  000017de  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000208  00000000  00000000  00001e9c  2**2
+  8 .debug_frame  00000208  00000000  00000000  00001edc  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000479  00000000  00000000  000020a4  2**0
+  9 .debug_str    00000478  00000000  00000000  000020e4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000003c8  00000000  00000000  0000251d  2**0
+ 10 .debug_loc    000003f1  00000000  00000000  0000255c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 000000d8  00000000  00000000  000028e5  2**0
+ 11 .debug_ranges 000000d8  00000000  00000000  0000294d  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -61,7 +61,7 @@ Disassembly of section .text:
   5c:	de bf       	out	0x3e, r29	; 62
   5e:	cd bf       	out	0x3d, r28	; 61
   60:	0e 94 fc 00 	call	0x1f8	; 0x1f8 <main>
-  64:	0c 94 47 01 	jmp	0x28e	; 0x28e <_exit>
+  64:	0c 94 3e 01 	jmp	0x27c	; 0x27c <_exit>
 
 00000068 <__bad_interrupt>:
   68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -281,7 +281,7 @@ Disassembly of section .text:
 int main(void)
 {
 	SPI_Init();
- 1f8:	0e 94 3b 01 	call	0x276	; 0x276 <SPI_Init>
+ 1f8:	0e 94 36 01 	call	0x26c	; 0x26c <SPI_Init>
 	LED0_Init();
  1fc:	0e 94 db 00 	call	0x1b6	; 0x1b6 <LED0_Init>
 	LED1_Init();
@@ -316,62 +316,64 @@ ISR (SPI_STC_vect)
  226:	bf 93       	push	r27
  228:	ef 93       	push	r30
  22a:	ff 93       	push	r31
-	if (SPI_Recieve() == '1') 
- 22c:	0e 94 43 01 	call	0x286	; 0x286 <SPI_Recieve>
- 230:	81 33       	cpi	r24, 0x31	; 49
- 232:	19 f4       	brne	.+6      	; 0x23a <__vector_12+0x30>
-	LED0_TGL();
- 234:	0e 94 e1 00 	call	0x1c2	; 0x1c2 <LED0_TGL>
- 238:	0d c0       	rjmp	.+26     	; 0x254 <__vector_12+0x4a>
-	else if (SPI_Recieve() == '2') 
- 23a:	0e 94 43 01 	call	0x286	; 0x286 <SPI_Recieve>
- 23e:	82 33       	cpi	r24, 0x32	; 50
- 240:	19 f4       	brne	.+6      	; 0x248 <__vector_12+0x3e>
-	LED1_TGL();
- 242:	0e 94 ec 00 	call	0x1d8	; 0x1d8 <LED1_TGL>
- 246:	06 c0       	rjmp	.+12     	; 0x254 <__vector_12+0x4a>
-	else if (SPI_Recieve() == '3') 
- 248:	0e 94 43 01 	call	0x286	; 0x286 <SPI_Recieve>
- 24c:	83 33       	cpi	r24, 0x33	; 51
- 24e:	11 f4       	brne	.+4      	; 0x254 <__vector_12+0x4a>
-	LED2_TGL();
- 250:	0e 94 f7 00 	call	0x1ee	; 0x1ee <LED2_TGL>
- 254:	ff 91       	pop	r31
- 256:	ef 91       	pop	r30
- 258:	bf 91       	pop	r27
- 25a:	af 91       	pop	r26
- 25c:	9f 91       	pop	r25
- 25e:	8f 91       	pop	r24
- 260:	7f 91       	pop	r23
- 262:	6f 91       	pop	r22
- 264:	5f 91       	pop	r21
- 266:	4f 91       	pop	r20
- 268:	3f 91       	pop	r19
- 26a:	2f 91       	pop	r18
- 26c:	0f 90       	pop	r0
- 26e:	0f be       	out	0x3f, r0	; 63
- 270:	0f 90       	pop	r0
- 272:	1f 90       	pop	r1
- 274:	18 95       	reti
+	Uint8t data = SPDR;
+ 22c:	8f b1       	in	r24, 0x0f	; 15
+	if (data == '1')
+ 22e:	81 33       	cpi	r24, 0x31	; 49
+ 230:	19 f4       	brne	.+6      	; 0x238 <__vector_12+0x2e>
+	{
+		LED0_TGL();
+ 232:	0e 94 e1 00 	call	0x1c2	; 0x1c2 <LED0_TGL>
+ 236:	09 c0       	rjmp	.+18     	; 0x24a <__vector_12+0x40>
+	}
+	else if (data == '2')
+ 238:	82 33       	cpi	r24, 0x32	; 50
+ 23a:	19 f4       	brne	.+6      	; 0x242 <__vector_12+0x38>
+	{
+		LED1_TGL();
+ 23c:	0e 94 ec 00 	call	0x1d8	; 0x1d8 <LED1_TGL>
+ 240:	04 c0       	rjmp	.+8      	; 0x24a <__vector_12+0x40>
+	}
+	else if (data == '3')
+ 242:	83 33       	cpi	r24, 0x33	; 51
+ 244:	11 f4       	brne	.+4      	; 0x24a <__vector_12+0x40>
+	{
+		LED2_TGL();
+ 246:	0e 94 f7 00 	call	0x1ee	; 0x1ee <LED2_TGL>
+	} 
+	
+	
+}
+ 24a:	ff 91       	pop	r31
+ 24c:	ef 91       	pop	r30
+ 24e:	bf 91       	pop	r27
+ 250:	af 91       	pop	r26
+ 252:	9f 91       	pop	r25
+ 254:	8f 91       	pop	r24
+ 256:	7f 91       	pop	r23
+ 258:	6f 91       	pop	r22
+ 25a:	5f 91       	pop	r21
+ 25c:	4f 91       	pop	r20
+ 25e:	3f 91       	pop	r19
+ 260:	2f 91       	pop	r18
+ 262:	0f 90       	pop	r0
+ 264:	0f be       	out	0x3f, r0	; 63
+ 266:	0f 90       	pop	r0
+ 268:	1f 90       	pop	r1
+ 26a:	18 95       	reti
 
-00000276 <SPI_Init>:
- 276:	bd 98       	cbi	0x17, 5	; 23
- 278:	be 9a       	sbi	0x17, 6	; 23
- 27a:	bf 98       	cbi	0x17, 7	; 23
- 27c:	bc 98       	cbi	0x17, 4	; 23
- 27e:	78 94       	sei
- 280:	83 ee       	ldi	r24, 0xE3	; 227
- 282:	8d b9       	out	0x0d, r24	; 13
- 284:	08 95       	ret
+0000026c <SPI_Init>:
+ 26c:	bd 98       	cbi	0x17, 5	; 23
+ 26e:	be 9a       	sbi	0x17, 6	; 23
+ 270:	bf 98       	cbi	0x17, 7	; 23
+ 272:	bc 98       	cbi	0x17, 4	; 23
+ 274:	78 94       	sei
+ 276:	83 ee       	ldi	r24, 0xE3	; 227
+ 278:	8d b9       	out	0x0d, r24	; 13
+ 27a:	08 95       	ret
 
-00000286 <SPI_Recieve>:
- 286:	77 9b       	sbis	0x0e, 7	; 14
- 288:	fe cf       	rjmp	.-4      	; 0x286 <SPI_Recieve>
- 28a:	8f b1       	in	r24, 0x0f	; 15
- 28c:	08 95       	ret
+0000027c <_exit>:
+ 27c:	f8 94       	cli
 
-0000028e <_exit>:
- 28e:	f8 94       	cli
-
-00000290 <__stop_program>:
- 290:	ff cf       	rjmp	.-2      	; 0x290 <__stop_program>
+0000027e <__stop_program>:
+ 27e:	ff cf       	rjmp	.-2      	; 0x27e <__stop_program>

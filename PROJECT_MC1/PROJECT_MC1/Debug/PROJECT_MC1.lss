@@ -3,11 +3,11 @@ PROJECT_MC1.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000000f6  00000000  00000000  00000054  2**1
+  0 .text         000000f8  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  0000014a  2**0
+  1 .data         00000000  00800060  00800060  0000014c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .comment      00000030  00000000  00000000  0000014a  2**0
+  2 .comment      00000030  00000000  00000000  0000014c  2**0
                   CONTENTS, READONLY
   3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000017c  2**2
                   CONTENTS, READONLY
@@ -17,15 +17,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   6 .debug_abbrev 0000068c  00000000  00000000  00000a65  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   0000046d  00000000  00000000  000010f1  2**0
+  7 .debug_line   00000473  00000000  00000000  000010f1  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000114  00000000  00000000  00001560  2**2
+  8 .debug_frame  00000114  00000000  00000000  00001564  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000038b  00000000  00000000  00001674  2**0
+  9 .debug_str    000003cc  00000000  00000000  00001678  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000000ff  00000000  00000000  000019ff  2**0
+ 10 .debug_loc    000000ff  00000000  00000000  00001a44  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000060  00000000  00000000  00001afe  2**0
+ 11 .debug_ranges 00000060  00000000  00000000  00001b43  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -61,7 +61,7 @@ Disassembly of section .text:
   5c:	de bf       	out	0x3e, r29	; 62
   5e:	cd bf       	out	0x3d, r28	; 61
   60:	0e 94 36 00 	call	0x6c	; 0x6c <main>
-  64:	0c 94 79 00 	jmp	0xf2	; 0xf2 <_exit>
+  64:	0c 94 7a 00 	jmp	0xf4	; 0xf4 <_exit>
 
 00000068 <__bad_interrupt>:
   68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -73,9 +73,9 @@ Disassembly of section .text:
 int main(void)
 {
 	USART_Init();
-  6c:	0e 94 6c 00 	call	0xd8	; 0xd8 <USART_Init>
+  6c:	0e 94 6d 00 	call	0xda	; 0xda <USART_Init>
 	SPI_Init();
-  70:	0e 94 60 00 	call	0xc0	; 0xc0 <SPI_Init>
+  70:	0e 94 61 00 	call	0xc2	; 0xc2 <SPI_Init>
 	
     while (1) 
     {
@@ -107,98 +107,64 @@ ISR (USART_RXC_vect)
   96:	ff 93       	push	r31
 	Uint8t data = UDR;
   98:	8c b1       	in	r24, 0x0c	; 12
-	SPI_Transmit(data); 
-  9a:	0e 94 68 00 	call	0xd0	; 0xd0 <SPI_Transmit>
-  9e:	ff 91       	pop	r31
-  a0:	ef 91       	pop	r30
-  a2:	bf 91       	pop	r27
-  a4:	af 91       	pop	r26
-  a6:	9f 91       	pop	r25
-  a8:	8f 91       	pop	r24
-  aa:	7f 91       	pop	r23
-  ac:	6f 91       	pop	r22
-  ae:	5f 91       	pop	r21
-  b0:	4f 91       	pop	r20
-  b2:	3f 91       	pop	r19
-  b4:	2f 91       	pop	r18
-  b6:	0f 90       	pop	r0
-  b8:	0f be       	out	0x3f, r0	; 63
-  ba:	0f 90       	pop	r0
-  bc:	1f 90       	pop	r1
-  be:	18 95       	reti
+	while (data != 0)
+  9a:	81 11       	cpse	r24, r1
+	{
+		SPI_Transmit(data); 
+  9c:	0e 94 69 00 	call	0xd2	; 0xd2 <SPI_Transmit>
+		data = 0;
+	}
+  a0:	ff 91       	pop	r31
+  a2:	ef 91       	pop	r30
+  a4:	bf 91       	pop	r27
+  a6:	af 91       	pop	r26
+  a8:	9f 91       	pop	r25
+  aa:	8f 91       	pop	r24
+  ac:	7f 91       	pop	r23
+  ae:	6f 91       	pop	r22
+  b0:	5f 91       	pop	r21
+  b2:	4f 91       	pop	r20
+  b4:	3f 91       	pop	r19
+  b6:	2f 91       	pop	r18
+  b8:	0f 90       	pop	r0
+  ba:	0f be       	out	0x3f, r0	; 63
+  bc:	0f 90       	pop	r0
+  be:	1f 90       	pop	r1
+  c0:	18 95       	reti
 
-000000c0 <SPI_Init>:
+000000c2 <SPI_Init>:
+  c2:	bd 9a       	sbi	0x17, 5	; 23
+  c4:	be 98       	cbi	0x17, 6	; 23
+  c6:	bf 9a       	sbi	0x17, 7	; 23
+  c8:	bc 9a       	sbi	0x17, 4	; 23
+  ca:	78 94       	sei
+  cc:	83 ef       	ldi	r24, 0xF3	; 243
+  ce:	8d b9       	out	0x0d, r24	; 13
+  d0:	08 95       	ret
 
-void SPI_Init (void)
-{
-	// set directions for Master
-	#if SPI_MODE == MASTER
-	SET_BIT(SPI_PORT, MOSI_PIN);
-  c0:	bd 9a       	sbi	0x17, 5	; 23
-	CLR_BIT(SPI_PORT, MISO_PIN);
-  c2:	be 98       	cbi	0x17, 6	; 23
-	SET_BIT(SPI_PORT, CLK_PIN);
-  c4:	bf 9a       	sbi	0x17, 7	; 23
-	SET_BIT(SPI_PORT, SS_PIN);
-  c6:	bc 9a       	sbi	0x17, 4	; 23
-	sei();
-  c8:	78 94       	sei
-	SPCR = 0xF3;        // 1111 0011
-  ca:	83 ef       	ldi	r24, 0xF3	; 243
-  cc:	8d b9       	out	0x0d, r24	; 13
-  ce:	08 95       	ret
+000000d2 <SPI_Transmit>:
+  d2:	8f b9       	out	0x0f, r24	; 15
+  d4:	77 9b       	sbis	0x0e, 7	; 14
+  d6:	fe cf       	rjmp	.-4      	; 0xd4 <SPI_Transmit+0x2>
+  d8:	08 95       	ret
 
-000000d0 <SPI_Transmit>:
-	SPCR = 0xE3;   // 1110 0011
-	#endif
-}
-void SPI_Transmit (Uint8t data)
-{
-	SPDR = data;
-  d0:	8f b9       	out	0x0f, r24	; 15
-	while (GET_BIT(SPSR, SPIF) != 1); 
-  d2:	77 9b       	sbis	0x0e, 7	; 14
-  d4:	fe cf       	rjmp	.-4      	; 0xd2 <SPI_Transmit+0x2>
-}
-  d6:	08 95       	ret
+000000da <USART_Init>:
+  da:	89 9a       	sbi	0x11, 1	; 17
+  dc:	88 98       	cbi	0x11, 0	; 17
+  de:	78 94       	sei
+  e0:	1a b8       	out	0x0a, r1	; 10
+  e2:	80 e9       	ldi	r24, 0x90	; 144
+  e4:	8a b9       	out	0x0a, r24	; 10
+  e6:	10 bc       	out	0x20, r1	; 32
+  e8:	86 e8       	ldi	r24, 0x86	; 134
+  ea:	80 bd       	out	0x20, r24	; 32
+  ec:	87 e6       	ldi	r24, 0x67	; 103
+  ee:	89 b9       	out	0x09, r24	; 9
+  f0:	10 bc       	out	0x20, r1	; 32
+  f2:	08 95       	ret
 
-000000d8 <USART_Init>:
+000000f4 <_exit>:
+  f4:	f8 94       	cli
 
-void USART_Init (void)
-{
-	Uint16t UBRR_val = 0;
-	// Define the Tx & Rx direction 
-	SET_BIT(DDRD, PD1); 
-  d8:	89 9a       	sbi	0x11, 1	; 17
-	CLR_BIT(DDRD, PD0);
-  da:	88 98       	cbi	0x11, 0	; 17
-	
-	sei();
-  dc:	78 94       	sei
-
-	UCSRB = 0x00;
-  de:	1a b8       	out	0x0a, r1	; 10
-	UCSRB = 0x90;
-  e0:	80 e9       	ldi	r24, 0x90	; 144
-  e2:	8a b9       	out	0x0a, r24	; 10
-	//UCSRB = (1 << RXEN) | (1 << TXEN) | (1 << RXCIE) | (1 << TXCIE); //1001 0000
-	UCSRC = 0x00;
-  e4:	10 bc       	out	0x20, r1	; 32
-	UCSRC = 0x86;
-  e6:	86 e8       	ldi	r24, 0x86	; 134
-  e8:	80 bd       	out	0x20, r24	; 32
-	//UCSRC = (1 << URSEL) | (1 << UCSZ1) | (1 << UCSZ0);    // 1000 0110
-	
-	UBRR_val = (FRQ / (16 * BAUDRATE)) - 1;
-	UBRRL = UBRR_val;
-  ea:	87 e6       	ldi	r24, 0x67	; 103
-  ec:	89 b9       	out	0x09, r24	; 9
-	UBRRH = (UBRR_val >> 8);
-  ee:	10 bc       	out	0x20, r1	; 32
-  f0:	08 95       	ret
-
-000000f2 <_exit>:
-  f2:	f8 94       	cli
-
-000000f4 <__stop_program>:
-  f4:	ff cf       	rjmp	.-2      	; 0xf4 <__stop_program>
+000000f6 <__stop_program>:
+  f6:	ff cf       	rjmp	.-2      	; 0xf6 <__stop_program>
